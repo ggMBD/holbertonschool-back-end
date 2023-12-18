@@ -1,29 +1,23 @@
 #!/usr/bin/python3
-"""
-api : first use
-"""
+"""Gathering the needed informations from the API."""
 import csv
+import json
 import requests
-import sys
+from sys import argv
 
+if __name__ == '__main__':
+    resp_users = requests.get('https://jsonplaceholder.typicode.com/users')
+    resp_todos = requests.get('https://jsonplaceholder.typicode.com/todos')
 
-if __name__ == "__main__":
+    user_id = argv[1]
 
-    employee_id = int(sys.argv[1])
-    api_url = "https://jsonplaceholder.typicode.com"
-
-    user_response = requests.get(f"{api_url}/users/{employee_id}")
-    user_data = user_response.json()
-
-    todos_response = requests.get(f"{api_url}/todos?userId={employee_id}")
-    todos_data = todos_response.json()
-
-    employee_name = user_data.get('name')
-
-    csv_filename = f"{employee_id}.csv"
-    with open(csv_filename, 'w') as csvfile:
-        csv_writer = csv.writer(csvfile)
-
-        for task in todos_data:
-            csv_writer.writerow(
-                [employee_id, employee_name, task['completed'], task['title']])
+    for i in resp_users.json():
+        if i['id'] == int(user_id):
+            user_name = i['username']
+    with open(f'{user_id}.csv', 'w') as f:
+        for i in resp_todos.json():
+            if i['userId'] == int(user_id):
+                task = i['completed']
+                title = i['title']
+                f.write(
+                    f"\"{argv[1]}\",\"{user_name}\",\"{task}\",\"{title}\"\n")
