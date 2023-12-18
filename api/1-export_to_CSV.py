@@ -21,7 +21,7 @@ if __name__ == "__main__":
     employee_name = user_data.get('name')
 
     csv_filename = f"{employee_id}.csv"
-    with open(csv_filename, 'w', newline='') as csvfile:
+    with open(csv_filename, 'w') as csvfile:
         csv_writer = csv.writer(csvfile)
 
         for task in todos_data:
